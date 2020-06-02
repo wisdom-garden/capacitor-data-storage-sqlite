@@ -58,3 +58,18 @@ captures/
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
+
+.travis.yml
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+cordova-plugin-*.tgz
+package-upload.js
+package-upload.sh
+.nvmrc
+.tests
+.history
+.idea/

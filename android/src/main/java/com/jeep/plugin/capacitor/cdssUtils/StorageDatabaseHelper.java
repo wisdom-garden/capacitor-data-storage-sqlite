@@ -87,6 +87,14 @@ public class StorageDatabaseHelper extends SQLiteOpenHelper {
 
 
     }
+
+    private void createFilePath(File databaseFile) {
+        if(!databaseFile.exists()) {
+            databaseFile.mkdirs();
+            databaseFile.delete();
+        }
+    }
+
     private void InitializeSQLCipher(Context context) {
         SQLiteDatabase.loadLibs(context);
         SQLiteDatabase database = null;
@@ -96,6 +104,8 @@ public class StorageDatabaseHelper extends SQLiteOpenHelper {
         if(!encrypted && mode.equals("no-encryption")) {
 
             databaseFile = context.getDatabasePath(dbName);
+            createFilePath(databaseFile);
+            
             try {
                 database = SQLiteDatabase.openOrCreateDatabase(databaseFile, "", null);
                 isOpen = true;
@@ -104,6 +114,7 @@ public class StorageDatabaseHelper extends SQLiteOpenHelper {
             }
         } else if (encrypted && mode.equals("secret") && secret.length() > 0) {
             databaseFile = context.getDatabasePath(dbName);
+            createFilePath(databaseFile);
             try {
                 database = SQLiteDatabase.openOrCreateDatabase(databaseFile, secret, null);
                 isOpen = true;
@@ -115,6 +126,7 @@ public class StorageDatabaseHelper extends SQLiteOpenHelper {
                 && newsecret.length() > 0) {
 
             databaseFile = context.getDatabasePath(dbName);
+            createFilePath(databaseFile);
             try {
                 database = SQLiteDatabase.openOrCreateDatabase(databaseFile, secret, null);
                 // Change database secret to newsecret
@@ -133,12 +145,14 @@ public class StorageDatabaseHelper extends SQLiteOpenHelper {
             File oriDBFile = context.getDatabasePath(dbName);
             if (oriDBFile.exists()) {
                 tempFile = context.getDatabasePath("temp.db");
+                createFilePath(tempFile);
                 oriDBFile.renameTo(tempFile);
             } else {
                 tempFile = null;
             }
 
             databaseFile = context.getDatabasePath(dbName);
+            createFilePath(databaseFile);
             database = SQLiteDatabase.openOrCreateDatabase(databaseFile, secret, null);
 
             if (tempFile.exists()) {
