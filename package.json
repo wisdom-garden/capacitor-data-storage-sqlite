@@ -1,6 +1,6 @@
 {
   "name": "capacitor-data-storage-sqlite",
-  "version": "2.1.0",
+  "version": "2.1.0-1",
   "description": "Capacitor Data Storage SQLite Plugin",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -24,9 +24,12 @@
   },
   "files": [
     "dist/",
-    "ios/",
-    "android/",
-    "CapacitorDataStorageSqlite.podspec"
+    "android/src/main/",
+    "android/build.gradle",
+    "ios/Plugin/",
+    "CapacitorDataStorageSqlite.podspec",
+    "wg-update.md",
+    "README.md"
   ],
   "keywords": [
     "capacitor",
