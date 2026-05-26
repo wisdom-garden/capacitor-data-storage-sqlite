@@ -21,21 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build
-        run: npm run build
-
-      - name: Pack
-        run: npm pack
-
-      - name: Get pack filename
+      - name: Build and Pack
         id: pack
         run: |
+          npm run build
+          npm pack
           NAME=$(node -e "const p=require('./package.json'); console.log(p.name+'-'+p.version+'.tgz')")
           echo "file=$NAME" >> $GITHUB_OUTPUT
           echo "remote=${{ vars.OSS_REMOTE_DIR }}/$NAME" >> $GITHUB_OUTPUT
-
-      - name: Install ali-oss
-        run: npm install --no-save --legacy-peer-deps ali-oss
 
       - name: Upload to OSS
         run: node scripts/oss-upload.js ${{ steps.pack.outputs.file }} ${{ steps.pack.outputs.remote }}
