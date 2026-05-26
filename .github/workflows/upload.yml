@@ -1,0 +1,44 @@
+name: Pack and Upload to OSS
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Pack
+        run: npm pack
+
+      - name: Get pack filename
+        id: pack
+        run: |
+          NAME=$(node -e "const p=require('./package.json'); console.log(p.name+'-'+p.version+'.tgz')")
+          echo "file=$NAME" >> $GITHUB_OUTPUT
+          echo "remote=${{ vars.OSS_REMOTE_DIR }}/$NAME" >> $GITHUB_OUTPUT
+
+      - name: Install ossutil
+        run: |
+          curl -sSLo ossutil https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil64
+          chmod +x ossutil
+          sudo mv ossutil /usr/local/bin/
+
+      - name: Upload to OSS
+        run: |
+          ossutil cp ${{ steps.pack.outputs.file }} \
+            oss://${{ vars.OSS_BUCKET }}/${{ steps.pack.outputs.remote }} \
+            -e ${{ vars.OSS_ENDPOINT }} \
+            -i ${{ secrets.OSS_ACCESS_KEY_ID }} \
+            -k ${{ secrets.OSS_ACCESS_KEY_SECRET }} \
+            -f
+          echo "Upload success: https://${{ vars.OSS_BUCKET }}.${{ vars.OSS_ENDPOINT }}/${{ steps.pack.outputs.remote }}"

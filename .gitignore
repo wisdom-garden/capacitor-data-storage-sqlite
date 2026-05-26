@@ -2,6 +2,9 @@
 dist/
 node_modules/
 
+# local env (never commit real credentials)
+.env
+
 # iOS files
 Pods
 Build
