@@ -29,7 +29,7 @@ jobs:
           echo "remote=${{ vars.OSS_REMOTE_DIR }}/$NAME" >> $GITHUB_OUTPUT
 
       - name: Install ali-oss
-        run: npm install --no-save ali-oss
+        run: npm install --no-save --legacy-peer-deps ali-oss
 
       - name: Upload to OSS
         run: node scripts/oss-upload.js ${{ steps.pack.outputs.file }} ${{ steps.pack.outputs.remote }}
