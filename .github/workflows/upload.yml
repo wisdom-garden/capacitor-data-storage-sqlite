@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   upload:
@@ -27,18 +28,13 @@ jobs:
           echo "file=$NAME" >> $GITHUB_OUTPUT
           echo "remote=${{ vars.OSS_REMOTE_DIR }}/$NAME" >> $GITHUB_OUTPUT
 
-      - name: Install ossutil
-        run: |
-          curl -sSLo ossutil https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil64
-          chmod +x ossutil
-          sudo mv ossutil /usr/local/bin/
+      - name: Install ali-oss
+        run: npm install --no-save ali-oss
 
       - name: Upload to OSS
-        run: |
-          ossutil cp ${{ steps.pack.outputs.file }} \
-            oss://${{ vars.OSS_BUCKET }}/${{ steps.pack.outputs.remote }} \
-            -e ${{ vars.OSS_ENDPOINT }} \
-            -i ${{ secrets.OSS_ACCESS_KEY_ID }} \
-            -k ${{ secrets.OSS_ACCESS_KEY_SECRET }} \
-            -f
-          echo "Upload success: https://${{ vars.OSS_BUCKET }}.${{ vars.OSS_ENDPOINT }}/${{ steps.pack.outputs.remote }}"
+        run: node scripts/oss-upload.js ${{ steps.pack.outputs.file }} ${{ steps.pack.outputs.remote }}
+        env:
+          OSS_REGION: ${{ vars.OSS_REGION }}
+          OSS_BUCKET: ${{ vars.OSS_BUCKET }}
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
