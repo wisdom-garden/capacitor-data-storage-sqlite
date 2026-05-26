@@ -1,4 +1,4 @@
-import LocalForage from 'jeep-localforage';
+import LocalForage from 'localforage';
 import { Data } from "./Data";
 
 //const DATABASE: string = "storageIDB";
